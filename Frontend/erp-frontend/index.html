@@ -1,0 +1,25 @@
+<!-- public/index.html or root index.html created by Vite -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <title>ERP</title>
+
+    <!-- Tailwind CDN (production-safe defaults) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // optional: extend Tailwind (colors, fonts)
+      tailwind.config = {
+        theme: { extend: { container: { center: true } } }
+      }
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
