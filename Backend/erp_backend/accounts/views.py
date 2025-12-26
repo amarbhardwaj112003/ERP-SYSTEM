@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-# ✅ Use role from Custom User model (not from groups)
+#  Use role from Custom User model (not from groups)
 class CustomLoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)

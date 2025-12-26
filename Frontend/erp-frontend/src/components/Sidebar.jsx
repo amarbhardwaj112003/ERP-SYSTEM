@@ -1,15 +1,36 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { ROLES } from '../utils/roles';
+import {
+  HomeIcon,
+  UsersIcon,
+  ClipboardDocumentListIcon,
+  ShoppingCartIcon,
+  CubeIcon,
+  CurrencyDollarIcon,
+  ChatBubbleLeftRightIcon,
+  MegaphoneIcon,
+  ArrowRightOnRectangleIcon // <- fixed logout icon
+} from '@heroicons/react/24/outline';
 
-const link = (to, label) => (
+// Sidebar link generator
+const sidebarLink = (to, label, Icon, color) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `block px-3 py-2 rounded hover:bg-gray-100 ${isActive ? 'bg-gray-200 font-medium' : ''}`
+      `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 hover:bg-gradient-to-r hover:from-${color}-100 hover:to-${color}-200 ${
+        isActive
+          ? `bg-gradient-to-r from-${color}-500 to-${color}-600 text-white`
+          : `text-gray-700`
+      }`
     }
   >
-    {label}
+    {({ isActive }) => (
+      <>
+        <Icon className={`w-6 h-6 ${isActive ? 'text-white' : `text-${color}-600`}`} />
+        <span className="font-medium">{label}</span>
+      </>
+    )}
   </NavLink>
 );
 
@@ -17,45 +38,61 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="w-64 shrink-0 border-r bg-white h-full flex flex-col">
-      <div className="p-4 border-b">
-        <div className="text-lg font-semibold">ERP</div>
-        <div className="text-xs text-gray-500">{user?.username} · {user?.role}</div>
+    <aside className="w-64 shrink-0 border-r bg-white h-full flex flex-col shadow-lg">
+      {/* Header */}
+      <div className="p-4 border-b flex flex-col">
+        <div className="text-2xl font-bold text-indigo-600">ERP System</div>
+        <div className="text-sm text-gray-500 mt-1">
+          {user?.username} · <span className="capitalize">{user?.role}</span>
+        </div>
       </div>
-      <div className="p-3 space-y-1 overflow-y-auto">
+
+      {/* Links */}
+      <div className="p-3 space-y-2 flex-1 overflow-y-auto">
         {user?.role === ROLES.SUPERADMIN && (
           <>
-            {link('/admin/dashboard', 'Admin Dashboard')}
-            {link('/hr/dashboard', 'HRM')}
-            {link('/orders/dashboard', 'Orders')}
-            {link('/inventory/dashboard', 'Inventory')}
-            {link('/finance/dashboard', 'Finance')}
-            {link('/crm/dashboard', 'CRM')}
+            {sidebarLink('/admin/dashboard', 'Admin Dashboard', HomeIcon, 'indigo')}
+            {sidebarLink('/hr/dashboard', 'HRM', UsersIcon, 'green')}
+            {sidebarLink('/orders/dashboard', 'Orders', ShoppingCartIcon, 'yellow')}
+            {sidebarLink('/inventory/dashboard', 'Inventory', CubeIcon, 'purple')}
+            {sidebarLink('/finance/dashboard', 'Finance', CurrencyDollarIcon, 'teal')}
+            {sidebarLink('/crm/dashboard', 'CRM', ChatBubbleLeftRightIcon, 'pink')}
           </>
         )}
+
         {user?.role === ROLES.HR && (
           <>
-            {link('/hr/dashboard', 'HRM')}
-            {link('/inventory/dashboard', 'Inventory')}
-            {link('/supply/dashboard', 'Supply')}
+            {sidebarLink('/hr/dashboard', 'HRM', UsersIcon, 'green')}
+            {sidebarLink('/inventory/dashboard', 'Inventory', CubeIcon, 'purple')}
+            {sidebarLink('/supply/dashboard', 'Supply', ClipboardDocumentListIcon, 'yellow')}
           </>
         )}
+
         {user?.role === ROLES.MANAGER && (
           <>
-            {link('/orders/dashboard', 'Orders')}
-            {link('/inventory/dashboard', 'Inventory')}
-            {link('/supply/dashboard', 'Supply')}
+            {sidebarLink('/orders/dashboard', 'Orders', ShoppingCartIcon, 'yellow')}
+            {sidebarLink('/inventory/dashboard', 'Inventory', CubeIcon, 'purple')}
+            {sidebarLink('/supply/dashboard', 'Supply', ClipboardDocumentListIcon, 'teal')}
           </>
         )}
+
         {user?.role === ROLES.EMPLOYEE && (
           <>
-            {link('/orders/customer', 'Customer UI')}
-            {link('/hr/employee-profile', 'My Profile')}
+            {sidebarLink('/orders/customer', 'Customer UI', HomeIcon, 'blue')}
+            {sidebarLink('/hr/employee-profile', 'My Profile', UsersIcon, 'green')}
           </>
         )}
       </div>
-      <div className="mt-auto p-3 border-t">
-        <button onClick={logout} className="w-full py-2 rounded border hover:bg-gray-50">Logout</button>
+
+      {/* Logout */}
+      <div className="p-4 border-t">
+        <button
+          onClick={logout}
+          className="w-full flex items-center gap-2 justify-center py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition"
+        >
+          <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          Logout
+        </button>
       </div>
     </aside>
   );

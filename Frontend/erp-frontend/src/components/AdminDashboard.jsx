@@ -1,57 +1,166 @@
-// src/components/AdminDashboard.js
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../auth/AuthContext';
+// src/modules/admin/AdminDashboard.jsx
+import React, { useEffect, useState } from "react";
+import HRM from "../../services/hrmApi";
+import Inventory from "../../services/inventoryApi";
+import OrderAPI from "../../services/orderApi";
+import FinanceAPI from "../../services/financeApi";
+// import CRMAPI from "../../services/crmApi";
+// import SupplyAPI from "../../services/supplyApi";
+
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 export default function AdminDashboard() {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  // Stats
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [pendingOrders, setPendingOrders] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+
+  // Charts
+  const [orderStatusData, setOrderStatusData] = useState({});
+  const [revenueSplitData, setRevenueSplitData] = useState({});
+
+  useEffect(() => {
+    fetchHRM();
+    fetchOrders();
+    fetchFinance();
+  }, []);
+
+  // --- HRM ---
+  const fetchHRM = async () => {
+    try {
+      const res = await HRM.getEmployees();
+      // Safe check: ensure data is an array
+      const employees = Array.isArray(res.data) ? res.data : [];
+      setTotalEmployees(employees.length);
+    } catch (err) {
+      console.error("HRM fetch error:", err);
+      setTotalEmployees(0); // default to 0 if API fails
+    }
+  };
+
+  // --- Orders ---
+  const fetchOrders = async () => {
+    try {
+      const res = await OrderAPI.getOrders();
+      const orders = Array.isArray(res.data) ? res.data : [];
+
+      const pending = orders.filter((o) => o.status === "pending").length;
+      setPendingOrders(pending);
+
+      // Bar chart: order status
+      const statusCounts = orders.reduce((acc, curr) => {
+        acc[curr.status] = (acc[curr.status] || 0) + 1;
+        return acc;
+      }, {});
+
+      setOrderStatusData({
+        labels: Object.keys(statusCounts),
+        datasets: [
+          {
+            label: "Orders",
+            data: Object.values(statusCounts),
+            backgroundColor: ["#3b82f6", "#facc15", "#10b981", "#ef4444", "#8b5cf6"],
+          },
+        ],
+      });
+    } catch (err) {
+      console.error("Orders fetch error:", err);
+      setPendingOrders(0);
+    }
+  };
+
+  // --- Finance ---
+  const fetchFinance = async () => {
+    try {
+      const res = await FinanceAPI.getRevenue(); // API must return { total, split }
+      const total = res.data?.total || 0;
+      setRevenue(total);
+
+      setRevenueSplitData({
+        labels: Object.keys(res.data?.split || {}),
+        datasets: [
+          {
+            data: Object.values(res.data?.split || {}),
+            backgroundColor: ["#3b82f6", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#06b6d4"],
+          },
+        ],
+      });
+    } catch (err) {
+      console.error("Finance fetch error:", err);
+      setRevenue(0);
+    }
+  };
 
   const modules = [
-    { name: 'HRM', path: '/hr' },
-    { name: 'Order Management', path: '/orders' },
-    { name: 'Inventory', path: '/inventory' },
-    { name: 'Supply Chain', path: '/supply' },
-    { name: 'Finance', path: '/finance' },
-    { name: 'CRM', path: '/crm' },
+    { name: "HRM", path: "/hrm/dashboard" },
+    { name: "Orders", path: "/orders/dashboard" },
+    { name: "Inventory", path: "/inventory/dashboard" },
+    { name: "Supply", path: "/supply/dashboard" },
+    { name: "Finance", path: "/finance/dashboard" },
+    { name: "CRM", path: "/crm/dashboard" },
   ];
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100 dark:bg-gray-900">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
-        <div className="space-x-2">
-          <button
-            onClick={() => logout()}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
-          >
-            Logout
-          </button>
-          <button
-            onClick={() => document.documentElement.classList.toggle('dark')}
-            className="bg-secondary text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200"
-          >
-            Toggle Dark Mode
-          </button>
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl border bg-white shadow">
+          <div className="text-sm text-gray-500">Total Employees</div>
+          <div className="text-3xl font-semibold">{totalEmployees}</div>
+        </div>
+        <div className="p-4 rounded-xl border bg-white shadow">
+          <div className="text-sm text-gray-500">Pending Orders</div>
+          <div className="text-3xl font-semibold">{pendingOrders}</div>
+        </div>
+        <div className="p-4 rounded-xl border bg-white shadow">
+          <div className="text-sm text-gray-500">Revenue (₹)</div>
+          <div className="text-3xl font-semibold">{revenue}</div>
         </div>
       </div>
-      <div className="mb-6">
-        <button
-          onClick={() => navigate('/users')}
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200"
-        >
-          Manage Users
-        </button>
+
+      {/* Charts */}
+      <div className="grid lg:grid-cols-2 gap-4">
+        <div className="p-4 rounded-xl border bg-white min-h-[260px]">
+          <h3 className="text-lg font-semibold mb-2">Order Status</h3>
+          {orderStatusData?.labels?.length ? (
+            <Bar data={orderStatusData} />
+          ) : (
+            <div className="text-gray-400">No data</div>
+          )}
+        </div>
+
+        <div className="p-4 rounded-xl border bg-white min-h-[260px]">
+          <h3 className="text-lg font-semibold mb-2">Revenue Split</h3>
+          {revenueSplitData?.labels?.length ? (
+            <Pie data={revenueSplitData} />
+          ) : (
+            <div className="text-gray-400">No data</div>
+          )}
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {modules.map(module => (
-          <div
-            key={module.name}
-            onClick={() => navigate(module.path)}
-            className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer transition duration-200"
+
+      {/* Modules Navigation */}
+      <div className="grid md:grid-cols-3 gap-4">
+        {modules.map((m) => (
+          <a
+            key={m.name}
+            href={m.path}
+            className="p-4 rounded-xl border bg-white hover:shadow-lg transition-all"
           >
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{module.name}</h3>
-          </div>
+            <div className="text-lg font-semibold">{m.name}</div>
+            <div className="text-gray-500 text-sm">Open {m.name} module</div>
+          </a>
         ))}
       </div>
     </div>

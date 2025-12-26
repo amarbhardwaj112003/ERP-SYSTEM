@@ -1,7 +1,9 @@
+// src/components/LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as loginApi } from '../services/authApi';
 import { useAuth } from './useAuth';
+import { LockClosedIcon, UserIcon } from '@heroicons/react/24/outline';
 
 export default function LoginPage() {
   const [userId, setUserId] = useState('');
@@ -27,66 +29,77 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2">
-      {/* Left: branding */}
-      <div className="hidden md:flex items-center justify-center bg-gradient-to-br from-black to-gray-700 p-10">
-        <div className="max-w-md text-white">
-          <h1 className="text-4xl font-bold mb-3">ERP Platform</h1>
-          <p className="text-gray-200">
-            Unified control over HRM, Orders, Inventory, Finance & CRM — real-time, role-based, and blazing fast.
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left Panel: Animated Gradient */}
+      <div className="hidden md:flex flex-1 items-center justify-center bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 relative overflow-hidden">
+        <div className="absolute inset-0 animate-gradient-slow opacity-30"></div>
+        <div className="z-10 max-w-md text-white px-6">
+          <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">ERP Platform</h1>
+          <p className="text-lg text-indigo-100 drop-shadow-sm">
+            Unified control over HRM, Orders, Inventory, Finance & CRM — real-time, role-based, blazing fast.
           </p>
         </div>
       </div>
 
-      {/* Right: form */}
-      <div className="flex items-center justify-center p-6">
-        <form className="w-full max-w-md bg-white border border-gray-200 rounded-xl p-8 shadow-sm" onSubmit={onSubmit}>
-          <h2 className="text-2xl font-semibold mb-6">Sign in</h2>
+      {/* Right Panel: Login Card */}
+      <div className="flex flex-1 items-center justify-center p-6 bg-gray-50 dark:bg-gray-900">
+        <form
+          onSubmit={onSubmit}
+          className="relative w-full max-w-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-3xl p-10 shadow-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1"
+        >
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-8 text-center">Sign in</h2>
 
-          {err && <div className="mb-4 p-3 text-sm rounded bg-red-50 text-red-700 border border-red-200">{err}</div>}
+          {err && (
+            <div className="mb-6 p-3 text-sm rounded bg-red-50 text-red-700 border border-red-200 animate-pulse">
+              {err}
+            </div>
+          )}
 
-          <label className="block text-sm font-medium mb-1">User ID</label>
-          <input
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring"
-            placeholder="e.g. admin001"
-            required
-          />
+          {/* User ID Field */}
+          <div className="relative mb-6">
+            <UserIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300" />
+            <input
+              type="text"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              placeholder="User ID"
+              required
+              className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-transparent peer transition"
+            />
+            <label className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300 text-sm peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-3 peer-focus:text-indigo-500 peer-focus:text-sm transition-all">
+              User ID
+            </label>
+          </div>
 
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            value={password}
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-6 px-3 py-2 border rounded focus:outline-none focus:ring"
-            placeholder="••••••••"
-            required
-          />
+          {/* Password Field */}
+          <div className="relative mb-8">
+            <LockClosedIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300" />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-transparent peer transition"
+            />
+            <label className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300 text-sm peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-3 peer-focus:text-indigo-500 peer-focus:text-sm transition-all">
+              Password
+            </label>
+          </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 rounded bg-black text-white hover:opacity-90 disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white font-semibold text-lg shadow-md hover:shadow-lg hover:scale-105 transition transform disabled:opacity-50"
           >
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
 
-          <p className="text-xs text-gray-500 mt-4">
-            Access is role-based. Contact Admin/HR for your credentials.
+          <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6">
+            Access is role-based. Contact Admin/HR for credentials.
           </p>
         </form>
       </div>
     </div>
   );
-}
-try {
-  const res = await login({ username, password });
-  // Save token
-} catch (err) {
-  if (err.response) {
-    alert("Login failed: " + JSON.stringify(err.response.data));
-  } else {
-    alert("Server error");
-  }
 }
