@@ -175,11 +175,22 @@ Create .env files (not committed to GitHub):
 Frontend .env
 VITE_API_BASE_URL=http://127.0.0.1:8000/api
 
-![Login](screenshots/login.png)
-![Dashboard](screenshots/admin.png)
-![HRM](screenshots/Hr.png)
-![Inventory](screenshots/inventory.png)
-![Finance](screenshots/finance.png)
-![CRM](screenshots/CRM.png)
+## 📸 ERP Screenshots
 
+### 🔐 Login Page
+![Login](Backend/screenshots/login.png)
 
+### 📊 Dashboard
+![Dashboard](Backend/screenshots/admin.png)
+
+### 👨‍💼 HRM Module
+![HRM](Backend/screenshots/Hr.png)
+
+### 📦 Inventory Module
+![Inventory](Backend/screenshots/inventory.png)
+
+### 💰 Finance Module
+![Finance](Backend/screenshots/finance.png)
+
+### 🧾 CRM Module
+![CRM](Backend/screenshots/CRM.png)
