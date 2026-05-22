@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_results',
     'django_celery_beat',
+    'drf_spectacular',
 
     # Local apps
     'accounts',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'finance',
     'crm',
     'core',
+    
 ]
 
 # --- MIDDLEWARE ---
@@ -135,6 +137,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -190,4 +193,12 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ERP System API',
+    'DESCRIPTION': 'Complete ERP Backend API Documentation',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
 }
