@@ -292,3 +292,33 @@ Full Stack & AI/ML Developer
 # 📜 License
 
 This project is licensed under the MIT License.
+
+# 📸 Screenshots
+
+## 🔐 Login Page
+<img src="./Backend/screenshots/login.png" width="100%" />
+
+---
+
+## 📊 Admin Dashboard
+<img src="./Backend/screenshots/admin.png" width="100%" />
+
+---
+
+## 👨‍💼 HRM Module
+<img src="./Backend/screenshots/Hr.png" width="100%" />
+
+---
+
+## 📦 Inventory Module
+<img src="./Backend/screenshots/inventory.png" width="100%" />
+
+---
+
+## 💰 Finance Module
+<img src="./Backend/screenshots/finance.png" width="100%" />
+
+---
+
+## 🤝 CRM Module
+<img src="./Backend/screenshots/CRM.png" width="100%" />
