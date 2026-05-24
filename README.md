@@ -162,34 +162,35 @@ Real-Time Analytics & Reports
 
 # 📸 Screenshots
 
+# 📸 Screenshots
+
 ## 🔐 Login Page
-![Login](Backend/screenshots/login.png)
+<img src="./Backend/screenshots/login.png" width="100%" />
 
 ---
 
 ## 📊 Admin Dashboard
-![Dashboard](Backend/screenshots/admin.png)
+<img src="./Backend/screenshots/admin.png" width="100%" />
 
 ---
 
 ## 👨‍💼 HRM Module
-![HRM](Backend/screenshots/Hr.png)
+<img src="./Backend/screenshots/Hr.png" width="100%" />
 
 ---
 
 ## 📦 Inventory Module
-![Inventory](Backend/screenshots/inventory.png)
+<img src="./Backend/screenshots/inventory.png" width="100%" />
 
 ---
 
 ## 💰 Finance Module
-![Finance](Backend/screenshots/finance.png)
+<img src="./Backend/screenshots/finance.png" width="100%" />
 
 ---
 
 ## 🤝 CRM Module
-![CRM](Backend/screenshots/CRM.png)
-
+<img src="./Backend/screenshots/CRM.png" width="100%" />
 ---
 
 # 📂 Project Structure
